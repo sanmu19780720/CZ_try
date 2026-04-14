@@ -566,4 +566,148 @@ CREATE TABLE `profit_stat_period` (
   UNIQUE KEY `uk_profit_stat_period` (`period_type`, `period_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='利润区间统计';
 
+DROP TABLE IF EXISTS `portal_site_config`;
+CREATE TABLE `portal_site_config` (
+  `id`              BIGINT          NOT NULL AUTO_INCREMENT,
+  `site_name`       VARCHAR(128)    NOT NULL COMMENT '站点名称',
+  `site_logo`       VARCHAR(512)             DEFAULT NULL COMMENT '站点 Logo URL',
+  `contact_phone`   VARCHAR(32)              DEFAULT NULL COMMENT '联系电话',
+  `contact_wechat`  VARCHAR(64)              DEFAULT NULL COMMENT '联系微信',
+  `contact_address` VARCHAR(512)             DEFAULT NULL COMMENT '联系地址',
+  `site_intro`      TEXT                     DEFAULT NULL COMMENT '站点简介',
+  `share_title`     VARCHAR(128)             DEFAULT NULL COMMENT '分享标题',
+  `share_desc`      VARCHAR(512)             DEFAULT NULL COMMENT '分享描述',
+  `share_image`     VARCHAR(512)             DEFAULT NULL COMMENT '分享图片 URL',
+  `created_by`      BIGINT                   DEFAULT NULL,
+  `created_at`      DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updated_by`      BIGINT                   DEFAULT NULL,
+  `updated_at`      DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  `deleted`         TINYINT         NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='门户站点配置';
+
+DROP TABLE IF EXISTS `portal_banner`;
+CREATE TABLE `portal_banner` (
+  `id`              BIGINT          NOT NULL AUTO_INCREMENT,
+  `title`           VARCHAR(128)    NOT NULL COMMENT '轮播标题',
+  `image_url`       VARCHAR(512)    NOT NULL COMMENT '轮播图片 URL',
+  `link_type`       VARCHAR(16)     NOT NULL DEFAULT 'NONE' COMMENT 'NONE/PRODUCT/CASE/URL',
+  `link_value`      VARCHAR(512)             DEFAULT NULL COMMENT '链接值（ID 或 URL）',
+  `sort_no`         INT             NOT NULL DEFAULT 0 COMMENT '排序，越小越靠前',
+  `status`          VARCHAR(16)     NOT NULL DEFAULT 'ENABLED' COMMENT 'ENABLED/DISABLED',
+  `created_by`      BIGINT                   DEFAULT NULL,
+  `created_at`      DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updated_by`      BIGINT                   DEFAULT NULL,
+  `updated_at`      DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  `deleted`         TINYINT         NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `idx_portal_banner_status_sort` (`status`, `sort_no`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='门户轮播图';
+
+DROP TABLE IF EXISTS `portal_product`;
+CREATE TABLE `portal_product` (
+  `id`              BIGINT          NOT NULL AUTO_INCREMENT,
+  `product_id`      BIGINT          NOT NULL COMMENT '关联 ERP 商品 ID',
+  `display_title`   VARCHAR(256)    NOT NULL COMMENT '展示标题',
+  `display_image`   VARCHAR(512)             DEFAULT NULL COMMENT '展示主图 URL',
+  `display_price`   DECIMAL(18,2)            DEFAULT NULL COMMENT '展示价格',
+  `display_unit`    VARCHAR(32)              DEFAULT NULL COMMENT '价格单位',
+  `display_desc`    TEXT                     DEFAULT NULL COMMENT '展示描述',
+  `is_featured`     TINYINT         NOT NULL DEFAULT 0 COMMENT '是否精选',
+  `show_on_home`    TINYINT         NOT NULL DEFAULT 0 COMMENT '首页展示',
+  `sort_no`         INT             NOT NULL DEFAULT 0 COMMENT '排序',
+  `status`          VARCHAR(16)     NOT NULL DEFAULT 'ENABLED' COMMENT 'ENABLED/DISABLED',
+  `created_by`      BIGINT                   DEFAULT NULL,
+  `created_at`      DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updated_by`      BIGINT                   DEFAULT NULL,
+  `updated_at`      DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  `deleted`         TINYINT         NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_portal_product_product_id` (`product_id`),
+  KEY `idx_portal_product_home` (`show_on_home`, `status`, `sort_no`),
+  KEY `idx_portal_product_featured` (`is_featured`, `status`, `sort_no`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='门户展示产品';
+
+DROP TABLE IF EXISTS `portal_case`;
+CREATE TABLE `portal_case` (
+  `id`              BIGINT          NOT NULL AUTO_INCREMENT,
+  `case_title`      VARCHAR(256)    NOT NULL COMMENT '案例标题',
+  `case_category`   VARCHAR(64)              DEFAULT NULL COMMENT '案例分类',
+  `cover_image`     VARCHAR(512)             DEFAULT NULL COMMENT '封面图 URL',
+  `case_desc`       TEXT                     DEFAULT NULL COMMENT '案例描述',
+  `project_address` VARCHAR(512)             DEFAULT NULL COMMENT '项目地址',
+  `is_recommended`  TINYINT         NOT NULL DEFAULT 0 COMMENT '是否推荐',
+  `show_on_home`    TINYINT         NOT NULL DEFAULT 0 COMMENT '首页展示',
+  `sort_no`         INT             NOT NULL DEFAULT 0 COMMENT '排序',
+  `status`          VARCHAR(16)     NOT NULL DEFAULT 'ENABLED' COMMENT 'ENABLED/DISABLED',
+  `created_by`      BIGINT                   DEFAULT NULL,
+  `created_at`      DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updated_by`      BIGINT                   DEFAULT NULL,
+  `updated_at`      DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  `deleted`         TINYINT         NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `idx_portal_case_home` (`show_on_home`, `status`, `sort_no`),
+  KEY `idx_portal_case_recommended` (`is_recommended`, `status`, `sort_no`),
+  KEY `idx_portal_case_category` (`case_category`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='门户案例';
+
+DROP TABLE IF EXISTS `portal_case_image`;
+CREATE TABLE `portal_case_image` (
+  `id`              BIGINT          NOT NULL AUTO_INCREMENT,
+  `case_id`         BIGINT          NOT NULL COMMENT '案例 ID',
+  `image_url`       VARCHAR(512)    NOT NULL COMMENT '图片 URL',
+  `sort_no`         INT             NOT NULL DEFAULT 0 COMMENT '排序',
+  `created_by`      BIGINT                   DEFAULT NULL,
+  `created_at`      DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updated_by`      BIGINT                   DEFAULT NULL,
+  `updated_at`      DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  `deleted`         TINYINT         NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `idx_portal_case_image_case_sort` (`case_id`, `sort_no`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='门户案例图片';
+
+DROP TABLE IF EXISTS `portal_price_card`;
+CREATE TABLE `portal_price_card` (
+  `id`              BIGINT          NOT NULL AUTO_INCREMENT,
+  `title`           VARCHAR(128)    NOT NULL COMMENT '价格卡标题',
+  `image_url`       VARCHAR(512)             DEFAULT NULL COMMENT '价格卡图片 URL',
+  `reference_price` DECIMAL(18,2)            DEFAULT NULL COMMENT '参考价',
+  `price_unit`      VARCHAR(32)              DEFAULT NULL COMMENT '价格单位',
+  `desc_text`       VARCHAR(1024)            DEFAULT NULL COMMENT '说明文字',
+  `sort_no`         INT             NOT NULL DEFAULT 0 COMMENT '排序',
+  `status`          VARCHAR(16)     NOT NULL DEFAULT 'ENABLED' COMMENT 'ENABLED/DISABLED',
+  `created_by`      BIGINT                   DEFAULT NULL,
+  `created_at`      DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updated_by`      BIGINT                   DEFAULT NULL,
+  `updated_at`      DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  `deleted`         TINYINT         NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `idx_portal_price_card_status_sort` (`status`, `sort_no`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='门户价格卡片';
+
+DROP TABLE IF EXISTS `portal_inquiry`;
+CREATE TABLE `portal_inquiry` (
+  `id`                 BIGINT          NOT NULL AUTO_INCREMENT,
+  `customer_name`      VARCHAR(64)     NOT NULL COMMENT '客户姓名',
+  `mobile`             VARCHAR(32)     NOT NULL COMMENT '手机号',
+  `inquiry_type`       VARCHAR(32)              DEFAULT NULL COMMENT '咨询类型',
+  `inquiry_content`    VARCHAR(2048)            DEFAULT NULL COMMENT '咨询内容',
+  `source_page`        VARCHAR(64)              DEFAULT NULL COMMENT '来源页面（HOME/PRODUCT/CASE/CONTACT）',
+  `related_product_id` BIGINT                   DEFAULT NULL COMMENT '关联展示产品 ID',
+  `related_case_id`    BIGINT                   DEFAULT NULL COMMENT '关联案例 ID',
+  `status`             VARCHAR(16)     NOT NULL DEFAULT 'NEW' COMMENT 'NEW/FOLLOWING/CLOSED',
+  `follow_up_note`     VARCHAR(2048)            DEFAULT NULL COMMENT '跟进记录',
+  `created_by`         BIGINT                   DEFAULT NULL,
+  `created_at`         DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updated_by`         BIGINT                   DEFAULT NULL,
+  `updated_at`         DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  `deleted`            TINYINT         NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `idx_portal_inquiry_mobile` (`mobile`),
+  KEY `idx_portal_inquiry_status` (`status`),
+  KEY `idx_portal_inquiry_created_at` (`created_at`),
+  KEY `idx_portal_inquiry_related_product` (`related_product_id`),
+  KEY `idx_portal_inquiry_related_case` (`related_case_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='门户客户咨询';
+
 SET FOREIGN_KEY_CHECKS = 1;

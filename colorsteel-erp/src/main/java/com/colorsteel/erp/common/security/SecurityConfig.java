@@ -40,6 +40,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/v1/auth/login").permitAll()
+                .requestMatchers("/api/portal/**").permitAll()
+                .requestMatchers("/uploads/**").permitAll()
                 .requestMatchers(DOC_WHITELIST).permitAll()
                 .anyRequest().authenticated()
         );

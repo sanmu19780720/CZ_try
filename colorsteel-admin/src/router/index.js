@@ -21,6 +21,12 @@ const routes = [
       { path: 'projects', name: 'Projects', component: () => import('@/views/Project.vue') },
       { path: 'workers', name: 'Workers', component: () => import('@/views/Worker.vue') },
       { path: 'reports', name: 'Reports', component: () => import('@/views/Report.vue') },
+      { path: 'portal/site', name: 'PortalSite', component: () => import('@/views/PortalSiteConfig.vue') },
+      { path: 'portal/banners', name: 'PortalBanners', component: () => import('@/views/PortalBanner.vue') },
+      { path: 'portal/products', name: 'PortalProducts', component: () => import('@/views/PortalDisplayProduct.vue') },
+      { path: 'portal/cases', name: 'PortalCases', component: () => import('@/views/PortalCase.vue') },
+      { path: 'portal/price-cards', name: 'PortalPriceCards', component: () => import('@/views/PortalPriceCard.vue') },
+      { path: 'portal/inquiries', name: 'PortalInquiries', component: () => import('@/views/PortalInquiry.vue') },
     ],
   },
 ]

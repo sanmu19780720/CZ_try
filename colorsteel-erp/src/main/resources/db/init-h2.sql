@@ -456,3 +456,127 @@ CREATE TABLE profit_stat_daily (
   deleted TINYINT NOT NULL DEFAULT 0
 );
 CREATE UNIQUE INDEX uk_profit_stat_daily_date ON profit_stat_daily (stat_date);
+
+CREATE TABLE portal_site_config (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  site_name VARCHAR(128) NOT NULL,
+  site_logo VARCHAR(512),
+  contact_phone VARCHAR(32),
+  contact_wechat VARCHAR(64),
+  contact_address VARCHAR(512),
+  site_intro VARCHAR(4000),
+  share_title VARCHAR(128),
+  share_desc VARCHAR(512),
+  share_image VARCHAR(512),
+  created_by BIGINT,
+  created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  updated_by BIGINT,
+  updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  deleted TINYINT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE portal_banner (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(128) NOT NULL,
+  image_url VARCHAR(512) NOT NULL,
+  link_type VARCHAR(16) NOT NULL DEFAULT 'NONE',
+  link_value VARCHAR(512),
+  sort_no INT NOT NULL DEFAULT 0,
+  status VARCHAR(16) NOT NULL DEFAULT 'ENABLED',
+  created_by BIGINT,
+  created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  updated_by BIGINT,
+  updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  deleted TINYINT NOT NULL DEFAULT 0
+);
+CREATE INDEX idx_portal_banner_status_sort ON portal_banner (status, sort_no);
+
+CREATE TABLE portal_product (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  product_id BIGINT NOT NULL,
+  display_title VARCHAR(256) NOT NULL,
+  display_image VARCHAR(512),
+  display_price DECIMAL(18,2),
+  display_unit VARCHAR(32),
+  display_desc VARCHAR(4000),
+  is_featured TINYINT NOT NULL DEFAULT 0,
+  show_on_home TINYINT NOT NULL DEFAULT 0,
+  sort_no INT NOT NULL DEFAULT 0,
+  status VARCHAR(16) NOT NULL DEFAULT 'ENABLED',
+  created_by BIGINT,
+  created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  updated_by BIGINT,
+  updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  deleted TINYINT NOT NULL DEFAULT 0
+);
+CREATE UNIQUE INDEX uk_portal_product_product_id ON portal_product (product_id);
+CREATE INDEX idx_portal_product_home ON portal_product (show_on_home, status, sort_no);
+
+CREATE TABLE portal_case (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  case_title VARCHAR(256) NOT NULL,
+  case_category VARCHAR(64),
+  cover_image VARCHAR(512),
+  case_desc VARCHAR(4000),
+  project_address VARCHAR(512),
+  is_recommended TINYINT NOT NULL DEFAULT 0,
+  show_on_home TINYINT NOT NULL DEFAULT 0,
+  sort_no INT NOT NULL DEFAULT 0,
+  status VARCHAR(16) NOT NULL DEFAULT 'ENABLED',
+  created_by BIGINT,
+  created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  updated_by BIGINT,
+  updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  deleted TINYINT NOT NULL DEFAULT 0
+);
+CREATE INDEX idx_portal_case_home ON portal_case (show_on_home, status, sort_no);
+
+CREATE TABLE portal_case_image (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  case_id BIGINT NOT NULL,
+  image_url VARCHAR(512) NOT NULL,
+  sort_no INT NOT NULL DEFAULT 0,
+  created_by BIGINT,
+  created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  updated_by BIGINT,
+  updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  deleted TINYINT NOT NULL DEFAULT 0
+);
+CREATE INDEX idx_portal_case_image_case_sort ON portal_case_image (case_id, sort_no);
+
+CREATE TABLE portal_price_card (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(128) NOT NULL,
+  image_url VARCHAR(512),
+  reference_price DECIMAL(18,2),
+  price_unit VARCHAR(32),
+  desc_text VARCHAR(1024),
+  sort_no INT NOT NULL DEFAULT 0,
+  status VARCHAR(16) NOT NULL DEFAULT 'ENABLED',
+  created_by BIGINT,
+  created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  updated_by BIGINT,
+  updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  deleted TINYINT NOT NULL DEFAULT 0
+);
+CREATE INDEX idx_portal_price_card_status_sort ON portal_price_card (status, sort_no);
+
+CREATE TABLE portal_inquiry (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  customer_name VARCHAR(64) NOT NULL,
+  mobile VARCHAR(32) NOT NULL,
+  inquiry_type VARCHAR(32),
+  inquiry_content VARCHAR(2048),
+  source_page VARCHAR(64),
+  related_product_id BIGINT,
+  related_case_id BIGINT,
+  status VARCHAR(16) NOT NULL DEFAULT 'NEW',
+  follow_up_note VARCHAR(2048),
+  created_by BIGINT,
+  created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  updated_by BIGINT,
+  updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  deleted TINYINT NOT NULL DEFAULT 0
+);
+CREATE INDEX idx_portal_inquiry_mobile ON portal_inquiry (mobile);
+CREATE INDEX idx_portal_inquiry_status ON portal_inquiry (status);

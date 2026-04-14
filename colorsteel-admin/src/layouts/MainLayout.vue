@@ -27,6 +27,15 @@
         <el-menu-item index="/reports">
           <span>报表</span>
         </el-menu-item>
+        <el-sub-menu index="/portal">
+          <template #title>门户管理</template>
+          <el-menu-item index="/portal/site">站点设置</el-menu-item>
+          <el-menu-item index="/portal/banners">轮播图管理</el-menu-item>
+          <el-menu-item index="/portal/products">展示产品管理</el-menu-item>
+          <el-menu-item index="/portal/cases">案例管理</el-menu-item>
+          <el-menu-item index="/portal/price-cards">价格卡片管理</el-menu-item>
+          <el-menu-item index="/portal/inquiries">留资管理</el-menu-item>
+        </el-sub-menu>
       </el-menu>
     </el-aside>
     <el-container>
